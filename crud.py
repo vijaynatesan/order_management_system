@@ -31,7 +31,8 @@ def get_item(db: Session, item_id: int):
     return db.query(models.Item).filter(models.Item.id == item_id).first()
 
 def get_item_by_name(db: Session, name: str):
-    return db.query(models.Item).filter(models.Item.name == name).first()
+    # Search for items where name contains the given substring (case-insensitive)
+    return db.query(models.Item).filter(models.Item.name.ilike(f"%{name}%")).first()
 
 def get_items(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Item).offset(skip).limit(limit).all()
@@ -62,8 +63,19 @@ def delete_item(db: Session, item_id: int):
     return None
 
 def create_order(db: Session, order: schemas.ItemOrderCreate):
+    """
+    Create an order for an item if sufficient stock is available.
+
+    Args:
+        db (Session): The database session.
+        order (schemas.ItemOrderCreate): The order details.
+
+    Returns:
+        models.ItemOrder: The created ItemOrder instance if successful.
+        None: If the order could not be created due to insufficient stock or item not found.
+    """
     db_item = db.query(models.Item).filter(models.Item.id == order.item_id).first()
-    if db_item and db_item.in_stock >= order.order_quantity:
+    if db_item and db_item.in_stock >= order.order_quantity and (db_item.in_stock - order.order_quantity) >= 0:
         db_order = models.ItemOrder(**order.model_dump())
         db_item.in_stock -= order.order_quantity
         if db_item.in_stock < db_item.reorder_quantity:
