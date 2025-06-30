@@ -2,11 +2,45 @@
 from sqlalchemy.orm import Session
 import models, schemas
 
+# List all orders
+def get_orders(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.ItemOrder).offset(skip).limit(limit).all()
+
+# Delete customer
+def delete_customer(db: Session, customer_id: int):
+    db_customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
+    if db_customer:
+        db.delete(db_customer)
+        db.commit()
+        return db_customer
+    return None
+
+# Delete order
+def delete_order(db: Session, order_id: int):
+    db_order = db.query(models.ItemOrder).filter(models.ItemOrder.id == order_id).first()
+    if db_order:
+        db.delete(db_order)
+        db.commit()
+        return db_order
+    return None
+
+# Delete reorder log
+def delete_reorder_log(db: Session, log_id: int):
+    db_log = db.query(models.ItemReorderLog).filter(models.ItemReorderLog.id == log_id).first()
+    if db_log:
+        db.delete(db_log)
+        db.commit()
+        return db_log
+    return None
+
+
+
 def get_customer(db: Session, customer_id: int):
     return db.query(models.Customer).filter(models.Customer.id == customer_id).first()
 
 def get_customer_by_name(db: Session, name: str):
-    return db.query(models.Customer).filter(models.Customer.name == name).first()
+    # Search for customers where name contains the given substring (case-insensitive)
+    return db.query(models.Customer).filter(models.Customer.name.ilike(f"%{name}%")).all()
 
 def get_customers(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Customer).offset(skip).limit(limit).all()
@@ -32,7 +66,7 @@ def get_item(db: Session, item_id: int):
 
 def get_item_by_name(db: Session, name: str):
     # Search for items where name contains the given substring (case-insensitive)
-    return db.query(models.Item).filter(models.Item.name.ilike(f"%{name}%")).first()
+    return db.query(models.Item).filter(models.Item.name.ilike(f"%{name}%")).all()
 
 def get_items(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Item).offset(skip).limit(limit).all()
