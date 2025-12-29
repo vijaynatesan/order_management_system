@@ -1,0 +1,58 @@
+Create a Comprehensive Order Management Skill System
+Build a modular skill library for end-to-end order processing with the following architecture:
+1. Master Orchestrator: vnom-order-processing
+
+Acts as the main controller, coordinating all sub-skills
+Manages workflow and error handling across the entire order processing pipeline
+
+2. PDF Extraction: vnom-pdf-extraction
+
+Extracts customer details and order line items from uploaded PDF order forms
+Returns structured data to the master skill
+
+3. Data Validation: vnom-order-validation
+
+Validates extracted data using MCP tools:
+
+read_customer_by_name to verify customer exists
+read_item_by_name to verify all items exist
+
+
+Error Handling: If customer or any item is not found, halt processing and return clear error message to user
+
+4. Stock Availability Check: vnom-stock-check
+
+Verifies sufficient inventory for all order items
+If stock is insufficient, delegates to vnom-stock-exception skill
+Returns availability status to master skill
+
+5. Stock Exception Handling: vnom-stock-exception
+
+Rule: If customer segment is "Education", allow partial order fulfillment with available stock
+Rule: For all other segments, reject order and return error with item-level stock details
+
+6. Discount Application: vnom-discount-policy
+
+Applied after successful validation and stock confirmation
+Rule: Education segment = 10% discount per item
+Rule: Technology segment = 5% discount per item
+Returns discount information for order creation
+
+7. Reorder Monitoring: vnom-reorder-check
+
+After successful order placement, checks if items trigger reorder thresholds
+Includes reorder status in final summary
+
+8. Response Generation: vnom-order-response
+
+Creates professional email response for customer
+Summarizes order details, applied discounts, and any relevant notes
+
+Workflow Summary:
+PDF Upload → Extract Data → Validate Customer/Items → Check Stock → Handle Exceptions → Apply Discounts → Create Order (MCP) → Check Reorders → Generate Email Response
+Key Requirements:
+
+Use MCP tools for all database operations
+Implement clear error handling at each stage
+Skills should be modular and reusable
+Master skill should provide comprehensive user feedback throughout the process

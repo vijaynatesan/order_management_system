@@ -5,3 +5,4 @@ pydantic
 pytest
 httpx
 fastapi-mcp
+mcp

@@ -1,5 +1,5 @@
 
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, DateTime, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -11,6 +11,7 @@ class Customer(Base):
     name = Column(String, index=True)
     address = Column(String)
     zip_code = Column(String)
+    segment = Column(String)
 
     orders = relationship("ItemOrder", back_populates="customer")
 
@@ -22,6 +23,7 @@ class Item(Base):
     description = Column(String)
     manufacturer_name = Column(String)
     manufacturer_email = Column(String)
+    price = Column(Float)
     in_stock = Column(Integer)
     reorder_quantity = Column(Integer)
 
@@ -35,6 +37,9 @@ class ItemOrder(Base):
     item_id = Column(Integer, ForeignKey("items.id"))
     customer_id = Column(Integer, ForeignKey("customers.id"))
     order_quantity = Column(Integer)
+    discount = Column(Float)
+    original_price = Column(Float)
+    discounted_price = Column(Float)
 
     item = relationship("Item", back_populates="orders")
     customer = relationship("Customer", back_populates="orders")

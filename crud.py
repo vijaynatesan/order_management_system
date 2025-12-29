@@ -110,7 +110,16 @@ def create_order(db: Session, order: schemas.ItemOrderCreate):
     """
     db_item = db.query(models.Item).filter(models.Item.id == order.item_id).first()
     if db_item and db_item.in_stock >= order.order_quantity and (db_item.in_stock - order.order_quantity) >= 0:
-        db_order = models.ItemOrder(**order.model_dump())
+        original_price = db_item.price
+        discounted_price = original_price * (1 - order.discount)
+        db_order = models.ItemOrder(
+            item_id=order.item_id,
+            customer_id=order.customer_id,
+            order_quantity=order.order_quantity,
+            discount=order.discount,
+            original_price=original_price,
+            discounted_price=discounted_price
+        )
         db_item.in_stock -= order.order_quantity
         if db_item.in_stock < db_item.reorder_quantity:
             db_reorder_log = models.ItemReorderLog(item_id=order.item_id)

@@ -1,0 +1,16 @@
+# Python cache
+__pycache__/
+
+.venv/
+
+# Virtual environment folders (Windows)
+Include/
+Lib/
+Scripts/
+
+# Databases (optional – see note below)
+# *.db
+
+# OS / editor junk
+.vscode/
+.DS_Store

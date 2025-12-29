@@ -3,7 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./order_management.db"
+#SQLALCHEMY_DATABASE_URL = "sqlite:///./order_management.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///C:/Users/vijay/code/order_management_system/order_management.db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}

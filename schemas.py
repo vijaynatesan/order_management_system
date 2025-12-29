@@ -1,5 +1,5 @@
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Optional
 from datetime import datetime
 
@@ -7,6 +7,9 @@ class ItemOrderBase(BaseModel):
     item_id: int
     customer_id: int
     order_quantity: int
+    discount: float = Field(ge=0, le=1)
+    original_price: float
+    discounted_price: float
 
 class ItemOrderCreate(ItemOrderBase):
     pass
@@ -33,6 +36,7 @@ class ItemBase(BaseModel):
     description: Optional[str] = None
     manufacturer_name: str
     manufacturer_email: str
+    price: float
     in_stock: int
     reorder_quantity: int
 
@@ -50,6 +54,7 @@ class CustomerBase(BaseModel):
     name: str
     address: str
     zip_code: str
+    segment: str
 
 class CustomerCreate(CustomerBase):
     pass

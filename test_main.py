@@ -38,7 +38,7 @@ def db_session():
 def test_create_customer(db_session):
     response = client.post(
         "/customers/",
-        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345"},
+        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345", "segment": "Retail"},
     )
     assert response.status_code == 200
     data = response.json()
@@ -48,7 +48,7 @@ def test_create_customer(db_session):
 def test_read_customers(db_session):
     response = client.post(
         "/customers/",
-        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345"},
+        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345", "segment": "Retail"},
     )
     assert response.status_code == 200
     response = client.get("/customers/")
@@ -60,12 +60,12 @@ def test_read_customers(db_session):
 def test_update_customer(db_session):
     response = client.post(
         "/customers/",
-        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345"},
+        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345", "segment": "Retail"},
     )
     customer_id = response.json()["id"]
     response = client.put(
         f"/customers/{customer_id}",
-        json={"name": "Updated Customer", "address": "456 Updated St", "zip_code": "54321"},
+        json={"name": "Updated Customer", "address": "456 Updated St", "zip_code": "54321", "segment": "Education"},
     )
     assert response.status_code == 200
     data = response.json()
@@ -91,7 +91,7 @@ def test_create_item(db_session):
 def test_create_order(db_session):
     customer_response = client.post(
         "/customers/",
-        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345"},
+        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345", "segment": "Retail"},
     )
     customer_id = customer_response.json()["id"]
     item_response = client.post(
@@ -117,7 +117,7 @@ def test_create_order(db_session):
 def test_create_order_insufficient_stock(db_session):
     customer_response = client.post(
         "/customers/",
-        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345"},
+        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345", "segment": "Retail"},
     )
     customer_id = customer_response.json()["id"]
     item_response = client.post(
@@ -141,7 +141,7 @@ def test_create_order_insufficient_stock(db_session):
 def test_create_reorder_log(db_session):
     customer_response = client.post(
         "/customers/",
-        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345"},
+        json={"name": "Test Customer", "address": "123 Test St", "zip_code": "12345", "segment": "Retail"},
     )
     customer_id = customer_response.json()["id"]
     item_response = client.post(
